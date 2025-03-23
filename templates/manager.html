@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="../static/staff.css">
+</head>
+<body>
+    <div class="main-header">
+        <div class="website-name">MovieMart</div>
+        <div class="dashboard-name">Manager Dashboard</div>
+        <div class="dropdown">
+            <button class="dropdown-item">👤My Account</button>
+            <div class="dropdown-content">
+                <a href={{ url_for('total_rentals') }}>Check Status</a>
+                <a href={{ url_for('delete_user') }}>Delete User</a>
+                <a href={{ url_for('login_manager') }}>Logout</a>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Manage Movies</h2>
+    <div class="form-container">
+        <form action="/manager" method="POST">
+            <label for="movieName">Movie Title:</label>
+            <input type="text" id="movieName" name="movieName" required>
+
+            <label for="overview">Overview:</label>
+            <input type="text" id="overview" name="overview" required>
+
+            <label for="stock"> Stock:</label>
+            <input type="text" id="stock" name="stock" required>
+
+            <label for="genre">Genre:</label>
+            <select id="genre" name="genre">
+                <option>Comedy</option>
+                <option>Drama</option>
+                <option>Action</option>
+                <option>Horror</option>
+                <option>Sci-Fi</option>
+            </select>
+           
+            <label for="rating">Rating:</label>
+            <input type="text" id="rating" name="rating" required>
+
+            <label for="price">Price:</label>
+            <input type="text" id="price" name="price"  required>
+
+            <label for="year">Year:</label>
+            <input type="text" id="year" name="year" required>
+
+            <label for="posterpath">Poster Path:</label>
+            <input type="text" id="posterpath" name="posterpath" required>
+
+            <input type="submit" value="Update">
+        </form>
+    </div>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Your form and other content here -->
+
+  
+</body>
+
+
+    <h2>Delete Movie</h2>
+    <div class="form-container">
+        <form action="" method="POST">
+            <label for="movie">Movie:</label>
+            <input type="text" id="title" name="movie_title" required>
+            <input type="submit" value="Delete Movie">
+        </form>
+    </div>
+</body>
+</html>

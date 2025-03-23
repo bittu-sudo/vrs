@@ -1,0 +1,154 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+}
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+.website-name {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ff0000;
+}
+.dashboard-name {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff0000;
+}
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-item {
+    background-color: black;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #333;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
+    z-index: 1;
+}
+.dropdown-content a {
+    color: #fff;
+    padding: 8px 12px;
+    display: block;
+    text-decoration: none;
+}
+.dropdown-content a:hover {
+    background-color: #555;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+h2, h3 {
+    color: #ff0000;
+    text-align: center;
+}
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    margin-bottom: 30px;
+}
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+tr:hover {
+    background-color: #222;
+}
+.form-container, .notification-form {
+    background-color: #111;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 20px auto;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+label, textarea, input[type="submit"], select, input[type="text"] {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+}
+textarea, input[type="text"], select {
+    background-color: #333;
+    color: #fff;
+    /* border: 1px solid #ff0000; */
+    /* border-radius: 5px; */
+    padding: 10px;
+}
+input[type="submit"] {
+    background-color: #ff0000;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+input[type="submit"]:hover {
+    background-color: #cc0000;
+}
+/* Flash message container */
+.flash-container {
+    margin-top: 10px; /* Space from the submit button */
+}
+
+/* Base flash message style */
+.flash-message {
+    color: #000; /* Black text */
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
+    opacity: 1;
+    animation: fadeOut 4s linear forwards;
+}
+
+/* Success messages */
+.flash-message.success {
+    color: green; /* Green text for success */
+}
+
+/* Error messages */
+.flash-message.error {
+    color: red; /* Red text for errors */
+}
+.center-text {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh; /* Adjust based on preference */
+    font-size: 1.2em;
+    color: white; /* Ensure visibility */
+}
+
+/* Fade-out animation without movement */
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager - Orders Overview</title>
+    <link rel="stylesheet" href="../static/staff.css">
+</head>
+<body>
+    <div class="main-header">
+        <div class="website-name">MovieMart</div>
+        <div class="dashboard-name">Manager Dashboard - Orders Overview</div>
+        <div class="dropdown">
+            <button class="dropdown-item">Menu &#9662;</button>
+            <div class="dropdown-content">
+                <a href={{ url_for('manager') }}>Dashboard</a>
+                <a href={{ url_for('delete_user') }}>Delete user</a>
+                <a href={{ url_for('login_manager') }}>Logout</a>
+            </div>
+        </div>
+    </div>
+    
+    <h1>All Active Rentals</h1>
+
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer Name</th>
+                <th>Movie Title</th>
+                <th>Borrow Date</th>
+                <th>Return Deadline</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(0, length) %}
+            <tr>
+                <td>#{{ id[i] }}</td>
+                <td>{{ user_name[i] }} </td>
+                <td>{{ titles[i] }}</td>
+                <td>{{ borrowed_date[i] }}</td>
+                <td>{{ deadline[i] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+</body>
+</html>

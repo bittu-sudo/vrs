@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Login - MovieMart{% endblock %}</title>
+  <link rel="stylesheet" href="../static/login.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1 class="header">MovieMart</h1>
+    <form action="/manager" method="POST">
+      <h2>Manager Login</h2>
+      {% if warn=="y" %}
+        <div class="warning">Wrong Password!</div>
+      {% endif %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+      <div class="input-group">
+        <input type="password" id="password" name="password" placeholder="Password" required>
+      </div>
+      
+      <button type="submit" class="btn-login">Log in</button>
+    </form>
+   
+    <div class="links">
+      <a href="{{ url_for('login_user') }}">User Login</a>
+      <a href="{{ url_for('login_staff') }}">Staff Login</a>
+    </div>
+  </div>
+</body>
+</html>

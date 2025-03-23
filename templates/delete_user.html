@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Users | Manager</title>
+    <link rel="stylesheet" href="../static/staff.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="main-header">
+        <div class="website-name">MovieMart</div>
+        <div class="dashboard-name">Manager Dashboard</div>
+        <div class="dropdown">
+            <button class="dropdown-item">Menu</button>
+            <div class="dropdown-content">
+                <a href="{{ url_for('manager') }}">Dashboard</a>
+                <a href="{{ url_for('login_manager') }}">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <h2>Delete Users</h2>
+
+    <!-- Flash Messages -->
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Delete User Form -->
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('delete_user') }}">
+            
+            <!-- Select Role -->
+            <label for="role">Select Role:</label>
+            <select id="role" name="role" required>
+                <option value="user">User</option>
+                <option value="staff">Staff</option>
+            </select>
+
+            <!-- Enter Username -->
+            <label for="username">Enter Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter username to delete" required>
+
+            <!-- Submit Button -->
+            <input type="submit" value="Delete User">
+        </form>
+    </div>
+
+</body>
+</html>

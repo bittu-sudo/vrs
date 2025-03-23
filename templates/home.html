@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - MovieMart</title>
+    <link rel="stylesheet" href="../static/layout.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>MOVIE MART</h1>
+            </div>
+            
+            <div class="search-bar">
+                <form action="/search" method="POST">
+                    <input type="text" name="query" placeholder="Search for movies...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            
+            <div class="user-nav">
+                <div class="nav-item">
+                    <a href="/cart" class="nav-link">
+                        <span class="cart-icon">🛒</span> Cart
+                    </a>
+                </div>
+                
+                <div class="nav-item dropdown">
+                    <div class="nav-link dropdown-toggle" id="menuButton">
+                        👤 My Account
+                    </div>
+                    <div class="dropdown-menu" id="menuDropdown">
+                        <a href="/myrentals" class="dropdown-item">My Rentals</a>
+                        <a href="/login_user" class="dropdown-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <form action="/home" method="POST" class="filter-form">
+        <section class="filters">     
+            <div class="filter-group">
+                <label for="genre" class="filter-label">Genre:</label>
+                <select id="genre" name="genre" class="filter-select">
+                    <option value="all">All</option>
+                    <option value="action">Action</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="animation">Animation</option>
+                    <option value="comedy">Comedy</option>
+                    <option value="crime">Crime</option>
+                    <option value="drama">Drama</option>
+                    <option value="family">Family</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="history">History</option>
+                    <option value="horror">Horror</option>
+                    <option value="music">Music</option>
+                    <option value="mystery">Mystery</option>
+                    <option value="romance">Romance</option>
+                    <option value="science fiction">Science Fiction</option>
+                    <option value="thriller">Thriller</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="sort" class="filter-label">Sort By:</label>
+                <select id="sort" name="sort" class="filter-select">
+                    <option value="price">Price</option>
+                    <option value="rating">Rating</option>
+                    <option value="release">Release Date</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <button type="submit" class="apply-button">Apply</button>
+            </div>
+        </section>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+    
+    <main>
+        <div class="movie-grid">
+            {% for i in range(0, length) %}
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <a href="{{ url_for('view_movie', title=movie_titles[i]) }}">
+                        <img src="{{ movie_links[i] }}" alt="{{ movie_titles[i] }}" />
+                    </a>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">{{ movie_titles[i] }}</h3>
+                    <p class="movie-genre">{{ movie_genres[i] }}</p>
+                    <div class="movie-actions">
+                        <a href="{{ url_for('rent_movie', title=movie_titles[i]) }}" class="btn-rent">Rent ₹{{movie_prices[i]}}</a>
+                        <a href="{{ url_for('addcart', title=movie_titles[i]) }}" class="btn-rent">Add to cart</a>
+                    </div>
+                </div> 
+                   
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('menuButton').addEventListener('click', function() {
+            const menu = document.getElementById('menuDropdown');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('menuButton').contains(e.target)) {
+                document.getElementById('menuDropdown').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

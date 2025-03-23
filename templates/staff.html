@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <link href="../static/staff.css" rel="stylesheet">
+</head>
+<body>
+    <div class="main-header">
+        <div class="website-name">MovieMart</div>
+        <div class="dashboard-name">Staff Dashboard</div>
+        <div class="dropdown">
+            <button class="dropdown-item">👤My Account</button>
+            <div class="dropdown-content">
+                <a href="{{ url_for('login_staff') }}">Logout</a>
+            </div>
+        </div>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  <h2>Movies Rented Out</h2>
+  {% if warn=='x' %}
+  <p class="center-text"> No Active Rentals are present </p>
+  {% endif %}
+  {% if warn!='x' %}
+    <table>
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Customer Mail</th>
+                <th>Movie Title</th>
+                <th>Due Date</th>
+                <th>Action</th> <!-- Added Action Column -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(0,length) %}
+            <tr>
+                <td>{{ user_name[i] }}</td>
+                <td>{{ user_email[i] }}</td>
+                <td>{{ titles[i] }}</td>
+                <td>{{ deadline[i] }}</td>
+               
+                    <td>
+                        <!-- Notify Individual Button -->
+                        <form action="{{ url_for('sendmail', order_id=order_id[i]) }}" method="post">
+                            <button type="submit" class="btn-notify">Notify</button>
+                        </form>
+                    </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <h2>Out of Stock Movies</h2>
+    {% if not out_of_stock_movies %}
+    <p class="center-text"> All movies  are in stock </p>
+    {% endif %}
+    {% if out_of_stock_movies %}
+    <table>
+        <thead>
+            <tr>
+                <th>Movie Title</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in out_of_stock_movies %}
+            <tr>
+                <td>{{ movie }}</td>
+                <td>Out of Stock</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <h2>Manage Inventory</h2>
+    <div class="form-container">
+        <form action="/staff" method="post">
+            <h3>Stocking up Movies</h3>
+            <label for="moviename">Movie Name</label>
+            <input type="text" id="moviename" name="moviename" placeholder="Enter movie name" required>
+            <label for="stock">Additional Stock Quantity</label>
+            <input type="text" id="stock" name="stock" placeholder="Enter stock quantity" required>
+            <input type="submit" value="Add Stock">
+        </form>
+    </div>
+</body>
+</html>

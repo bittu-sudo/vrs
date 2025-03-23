@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Rentals - MOVIE MART</title>
+    <link rel="stylesheet" href="../static/layout.css">
+    <style>
+        .section-header {
+            margin: 30px 0 15px 0;
+            font-size: 1.5em;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .no-rentals {
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with navigation -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>MOVIE MART</h1>
+            </div>
+            <div class="search-bar">
+                <form action="/search" method="POST">
+                    <input type="text" name="query" placeholder="Search for movies...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="user-nav">
+                <div class="nav-item">
+                    <a href="/home" class="nav-link">Home</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/cart" class="nav-link">
+                        <span class="cart-icon">🛒</span> Cart
+                    </a>
+                </div>
+                <div class="nav-item dropdown">
+                    <div class="nav-link dropdown-toggle" id="menuButton">
+                        👤 My Account
+                    </div>
+                    <div class="dropdown-menu" id="menuDropdown">
+                        <a href="/myrentals" class="dropdown-item">My Rentals</a>
+                        <a href="/login_user" class="dropdown-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% endwith %}
+    
+    <main>
+        <!-- Page header with balance and Add Credit button -->
+        <div class="page-header">
+            <h1 class="page-title">My Cart</h1>
+            <form action="/cart" method="POST" class="add-credit-form">
+                <button type="submit">Rent All</button>
+            </form>
+            <div class="balance-display">
+                <span>Balance = {{balance}}</span>
+            </div>
+            <div class="balance-display">
+                <span>Total = {{ total }}</span>
+            </div>
+            <form action="/add_credit" method="POST" class="add-credit-form">
+                <label for="amount">Add Credit:</label>
+                <input type="number" id="amount" name="amount" min="100" step="100" required>
+                <button type="submit">Add Money</button>
+                <input type="hidden" name="redirect" value="cart">
+            </form>
+        </div>
+
+        <!-- Active Rentals Section -->
+        <h2 class="section-header"></h2>
+        <div class="movie-list">
+            {% if length > 0 %}
+                {% for i in range(length) %}
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <a href="{{ url_for('view_movie', title=movie_titles[i]) }}">
+                            <img src="{{ movie_links[i] }}" alt="{{ movie_titles[i] }}" />
+                        </a>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title">{{ movie_titles[i] }}</h3>
+                        <p class="movie-genre">{{ movie_genres[i] }}</p>
+                        <p class="movie-price">Price: ${{movie_prices[i]}}</p>
+                        <div class="movie-actions">
+                            <a href="{{ url_for('removecart', title=movie_titles[i]) }}" class="btn-rent">Remove</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <h3>
+                    You don't have any movies in your cart.
+                </h3>
+            {% endif %}
+        </div>
+    </main>
+    <script>
+        document.getElementById('menuButton').addEventListener('click', function() {
+            const menu = document.getElementById('menuDropdown');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('menuButton').contains(e.target)) {
+                document.getElementById('menuDropdown').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

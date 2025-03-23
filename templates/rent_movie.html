@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>" "</title>
+    <link rel="stylesheet" href="../static/layout.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>MOVIE MART</h1>
+            </div>
+            
+            <div class="search-bar">
+                <form action="/search" method="POST">
+                    <input type="text" name="query" placeholder="Search for movies...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="user-nav">
+                <div class="nav-item">
+                    <a href="/home" class="nav-link">
+                        Home
+                   </a>
+                </div>
+            <div class="user-nav">
+                <div class="nav-item">
+                    <a href="/cart" class="nav-link">
+                        <span class="cart-icon">🛒</span> Cart
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <div class="nav-link dropdown-toggle">
+                        <span class="menu-icon">👤<span> {{username}}
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="/myrentals" class="dropdown-item">My Rentals</a>
+                        <a href="/login_user" class="dropdown-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+    <div class="message-container">
+        {% if warn=="stock" %}
+        <div class="message">Sorry,Movie out of Stock!. Please try another movie.</div>
+        {% endif %}
+        {% if warn=="balance" %}
+        <div class="message">Sorry,Insufficient balance to rent this movie. Please check your balance.</div>
+        {% endif %}
+
+        <a href="/home" class="link">Go back to the home page to explore more movies.</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,176 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background-image: url('join.png'); /* Ensure correct path */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* Container styling with red glow effect */
+.container {
+  background: rgba(0, 0, 0, 0.9); /* Dark background */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.7); /* Red glowing effect */
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Header styling */
+.header {
+  text-align: center;
+  color: red; /* Bold red header */
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Labels */
+h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: red; /* Red color for header */
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 10px;
+  margin-bottom: 12px; 
+  font-size: 1em;
+  width: 100%;
+  border-radius: 8px;
+  background: black;
+  color: white;
+  transition: border-color 0.3s;
+}
+
+
+/* Focus effect */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+ 
+  outline: none;
+}
+
+/* Login button */
+.btn-login {
+  width: 100%;
+  padding: 0.6rem;
+  background-color: red; /* Red button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Button hover effect */
+.btn-login:hover {
+  background-color: darkred;
+}
+
+/* Remember me container */
+.remember-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: white;
+}
+
+/* Checkbox customization */
+.remember-container input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* Flash messages */
+.flash-message {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  opacity: 1;
+  animation: fadeOut 4s linear forwards;
+}
+
+/* Success & Error messages */
+.flash-message.success {
+  color: green;
+}
+.flash-message.error {
+  color: red;
+}
+
+/* Fade out effect */
+@keyframes fadeOut {
+  0%, 90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Signup and login links */
+.signup-link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.signup-link a {
+  color: red;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+.warning {
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Additional links styling */
+.links {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.links a {
+  text-decoration: none;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.links a:hover {
+  color: red;
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .container {
+      padding: 1.5rem;
+  }
+  .header {
+      font-size: 1.8rem;
+  }
+  h2 {
+      font-size: 1.5rem;
+  }
+}

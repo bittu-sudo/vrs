@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Rentals - MOVIE MART</title>
+    <link rel="stylesheet" href="../static/layout.css">
+    <style>
+        .section-header {
+            margin: 30px 0 15px 0;
+            font-size: 1.5em;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .no-rentals {
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with navigation -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>MOVIE MART</h1>
+            </div>
+            <div class="search-bar">
+                <form action="/search" method="POST">
+                    <input type="text" name="query" placeholder="Search for movies...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="user-nav">
+                <div class="nav-item">
+                    <a href="/home" class="nav-link">Home</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/cart" class="nav-link">
+                        <span class="cart-icon">🛒</span> Cart
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-link dropdown-toggle">
+                        <span class="menu-icon">👤</span> My Account
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="{{url_for('login_user')}}" class="dropdown-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% endwith %}
+    
+    <main>
+        <!-- Page header with balance and Add Credit button -->
+        <div class="page-header">
+            <h1 class="page-title">My Rentals</h1>
+            <div class="balance-display">
+                <span>Balance = {{balance}}</span>
+            </div>
+            <form action="/add_credit" method="POST" class="add-credit-form">
+                <label for="amount">Add Credit:</label>
+                <input type="number" id="amount" name="amount" min="100" step="100" required>
+                <button type="submit">Add Money</button>
+                <input type="hidden" name="redirect" value="rent">
+            </form>
+        </div>
+
+        <!-- Active Rentals Section -->
+        <h2 class="section-header">Active Rentals</h2>
+        <div class="movie-list">
+            {% if active_length > 0 %}
+                {% for i in range(0, active_length) %}
+                <div class="movie-card">
+                    <div class="movie-content">
+                        <h3 class="movie-title">{{active_titles[i]}}</h3>
+                        
+                        <div class="rental-info">
+                            <div class="rental-date">
+                                Rented on: {{ active_rented_date[i] }}
+                            </div>
+                            <div class="return-date">
+                                Return by: {{ active_deadline[i] }}
+                            </div>
+                        </div>
+                        
+                        <div class="divider"></div>
+                        
+                        <div class="rating-section">
+                            <div class="rating-title">
+                                Rate this movie:
+                            </div>
+                            
+                            <form action="/myrentals" method="post">
+                                <input type="hidden" name="title" value="{{ active_titles[i] }}">
+                                
+                                <div class="rating-options">
+                                    {% for j in range(1, 6) %}
+                                    <input type="radio" id="rating{{ i }}_{{ j }}" name="rating" value="{{ j }}">
+                                    <label for="rating{{ i }}_{{ j }}">{{ j }}</label>
+                                    {% endfor %}
+                                </div>
+                                <button type="submit" class="submit-btn">Submit</button>
+                            </form>
+                            <div class="movie-actions">
+                                <a href="{{ url_for('returnmovie', rent_id=active_order[i].id) }}" class="btn-return">Return Movie</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <h3>
+                    You don't have any active rentals.
+            </h3>
+            {% endif %}
+        </div>
+
+        <!-- Returned Rentals Section -->
+        <h2 class="section-header">Returned Rentals</h2>
+        <div class="movie-list">
+            {% if returned_length > 0 %}
+                {% for i in range(0, returned_length) %}
+                <div class="movie-card">
+                    <div class="movie-content">
+                        <h3 class="movie-title">{{returned_titles[i]}}</h3>
+                        
+                        <div class="rental-info">
+                            <div class="rental-date">
+                                Rented on: {{ returned_rented_date[i] }}
+                            </div>
+                            <div class="return-date">
+                                Returned by: {{ returned_deadline[i] }}
+                            </div>
+                        </div>
+                        
+                        <div class="divider"></div>
+                        
+                        <div class="rating-section">
+                            <div class="rating-title">
+                                Rate this movie:
+                            </div>
+                            
+                            <form action="/myrentals" method="post">
+                                <input type="hidden" name="title" value="{{ returned_titles[i] }}">
+                                
+                                <div class="rating-options">
+                                    {% for j in range(1, 6) %}
+                                    <input type="radio" id="returned_rating{{ i }}_{{ j }}" name="rating" value="{{ j }}">
+                                    <label for="returned_rating{{ i }}_{{ j }}">{{ j }}</label>
+                                    {% endfor %}
+                                </div>
+                                <button type="submit" class="submit-btn">Submit</button>
+                            </form>
+                            <!-- No Return Movie button for returned rentals -->
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <h3>You don't have any returned rentals.</h3>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

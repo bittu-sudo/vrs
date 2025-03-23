@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account</title>
+  <link rel="stylesheet" href="../static/join.css">
+</head>
+<body>
+  <div class="container">
+    <form action="/join" method="POST">
+      <h1>Join MovieMart! Rent, Watch, Enjoy</h1>
+       <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Your form and other content here -->
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Enter your username " required pattern=".{4,20}" title="username must be of 4-20 characters">
+
+      <p>Select your role</p>
+      <div class="radio-group">
+        <input type="radio" id="User" name="role" value="User" checked>
+        <label for="User">User</label>
+
+        <input type="radio" id="Staff" name="role" value="Staff">
+        <label for="Staff">Staff</label>
+      </div>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required pattern="^[a-zA-Z0-9_.+-]+@gmail\.com$" title="Please enter a valid email address">
+      
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Create a password" required>
+
+      <label for="repassword">Confirm Password</label>
+      <input type="password" id="repassword" name="repassword" placeholder="Confirm your password" required>
+      
+      
+      
+      <input type="submit" value="Sign Up">
+      <div class="login-link">
+        <small>Already have an account? <a href="{{ url_for('login_user') }}">Sign In</a></small>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

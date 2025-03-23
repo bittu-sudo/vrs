@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Login - MovieMart{% endblock %}</title>
+  <link rel="stylesheet" href="../static/login.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1 class="header">MovieMart</h1>
+    <form action="/login_staff" method="POST">
+      <h2>Staff Login</h2>
+      <!-- Flash Messages -->
+    <div class="flash-container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for category, message in messages %}
+                  <div class="flash-message {{ category }}">{{ message }}</div>
+              {% endfor %}
+          {% endif %}
+      {% endwith %}
+  </div>
+      
+      <div class="input-group">
+        <input type="text" id="username" name="username" placeholder="Username" required>
+      </div>
+      <div class="input-group">
+        <input type="email" id="email" name="email" placeholder="Email">
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" name="password" placeholder="Password" required>
+      </div>
+     
+      <button type="submit" class="btn-login">Log in</button>
+    </form>
+    <div class="signup-link">
+      Need An Account? <a href="{{ url_for('join') }}">Sign Up Now</a>
+    </div>
+    <div class="links">
+      <a href="{{ url_for('login_user') }}">User Login</a>
+      <a href="{{ url_for('login_manager') }}">Manager Login</a>
+    </div>
+  </div>
+</body>
+</html>
