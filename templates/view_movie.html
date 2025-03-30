@@ -38,7 +38,9 @@
                     </div>
                     <div class="dropdown-menu">
                         <a href="/rentals" class="dropdown-item">My Rentals</a>
-                        <a href="/login_user" class="dropdown-item">Logout</a>
+                        <form action="/logout" method="POST">
+                            <input type="submit" value="Logout" class="dropdown-item">
+                        </form>
                     </div>
                 </div>
             </div>

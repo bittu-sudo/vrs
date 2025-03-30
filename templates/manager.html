@@ -15,7 +15,9 @@
             <div class="dropdown-content">
                 <a href={{ url_for('total_rentals') }}>Check Status</a>
                 <a href={{ url_for('delete_user') }}>Delete User</a>
-                <a href={{ url_for('login_manager') }}>Logout</a>
+                <form action="/logout" method="POST">
+                    <input type="submit" value="Logout" class="dropdown-item">
+                </form>
             </div>
         </div>
     </div>

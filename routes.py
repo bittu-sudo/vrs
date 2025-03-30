@@ -48,6 +48,8 @@ def ho():
 
 @app.route("/join", methods=['POST','GET'])
 def join():
+  if 'username' in session:
+    return redirect(url_for('home'))
   if request.method=='POST':
     Username=request.form['username']
     user=User.query.filter_by(name=Username).first()
@@ -87,12 +89,13 @@ def join():
         db.session.commit()
         flash('Successfully registered! Please log in.','success')
         return redirect(url_for('login_staff'))
-  return render_template("join.html") 
+  return render_template("join.html")
 
 
 @app.route("/login_user", methods=['POST','GET'])
 def login_user():
-    global uni
+    if 'username' in session:
+        return redirect(url_for('home'))
     if request.method=='POST':
         username=request.form['username'].strip()
         email=request.form['email']
@@ -104,17 +107,31 @@ def login_user():
         if user is None or user.email!=email or user.password!=password:
             return render_template("login_user.html", warn="y")
         else:
+            if request.form.get('remember'):
+                session.permanent=True
             flash('Successfully logged in!','success')
             return redirect(url_for('home'))
     return render_template("login_user.html")
+
+@app.route("/logout", methods=['POST','GET'])
+def logout():
+    session.pop('username', None)
+    session.pop('cart', None)
+    session.pop('st', None)
+    session.pop('manager', None)
+    session.clear()
+    session.permanent = False
+    return redirect(url_for('login_user'))
   
 @app.route("/home", methods=['POST','GET'])
 def home():
     user = User.query.filter_by(name=session.get('username')).first()
-    if user is None:
-      return render_template("login_user.html")
+    try:
+        lm = user.lastmovie
+    except:
+        lm = "Titanic"
     
-    movies = recommendations[user.lastmovie]
+    movies = recommendations[lm]
     movies = [Movie.query.filter_by(title=movie).first() for movie in movies]
     movies = [movie for movie in movies if movie is not None]  # Filter out None values
     
@@ -281,11 +298,13 @@ def searchsort():
 
 
 
-@app.route('/view_movie/<title>', methods=['POST', 'GET'])
+@app.route('/view_movie/<title>', methods=['GET'])
 def view_movie(title):
   
   # if request.method=='POST':
   #   return redirect(url_for("rent", title=title, warn="n"))
+  if Movie.query.filter_by(title=title).first() is None:
+    return render_template("no_search.html", inpu=title)
   price=(Movie.query.filter_by(title=title).first()).price
   genre=format_genre((Movie.query.filter_by(title=title).first()).genre)
   overview=(Movie.query.filter_by(title=title).first()).overview
@@ -301,10 +320,12 @@ def view_movie(title):
    links=[(Movie.query.filter_by(title=movie).first()).posterpath for movie in movies]
    prices=[(Movie.query.filter_by(title=movie).first()).price for movie in movies]
    genres=[format_genre((Movie.query.filter_by(title=movie).first()).genre) for movie in movies]
-  return render_template("view_movie.html", title=title, price=str(price), genre=str(genre), release_date=str(release_date),overview=overview, posterpath=str(posterpath), rating=str(rating), stock=str(stock),movie_links=links, movie_titles=movies,movie_prices=prices,movie_genres=genres,length=len(links))
+  return render_template("view_movie.html", title=title, price=str(price), genre=str(genre), release_date=str(release_date),overview=overview, posterpath=str(posterpath), rating=str(rating), stock=str(stock),movie_links=links, movie_titles=movies,movie_prices=prices,movie_genres=genres,length=len(movies))
 
 @app.route('/rent_movie/<title>', methods=['POST', 'GET'])
 def rent_movie(title):
+  if 'username' not in session:
+    return redirect(url_for('login_user'))
   uni=session.get('username','')
   user = User.query.filter_by(name=uni).first()
   price=(Movie.query.filter_by(title=title).first()).price
@@ -351,6 +372,8 @@ def rent_movie(title):
 
 @app.route('/addcart/<title>', methods=['POST', 'GET'])
 def addcart(title):
+    if 'username' not in session:
+        return redirect(url_for('login_user'))
     uni = session.get('username','')
     user = User.query.filter_by(name=uni).first()
     movie = Movie.query.filter_by(title=title).first()
@@ -381,7 +404,12 @@ def removecart(title):
 
 @app.route('/cart', methods=['POST', 'GET'])
 def cart():
+    if 'username' not in session:
+        return redirect(url_for('login_user'))
     if request.method == 'POST':
+        if 'cart' not in session:
+            flash('Cart is empty!', 'error')
+            return redirect(url_for('cart'))
         titles = session['cart']
         movies = [Movie.query.filter_by(title=title).first() for title in titles]
         prices = [movie.price for movie in movies]
@@ -411,6 +439,8 @@ def cart():
 
 @app.route("/myrentals", methods=['POST', 'GET'])
 def myrentals():
+    if 'username' not in session:
+        return redirect(url_for('login_user'))
     uni = session.get('username', '')
     user = User.query.filter_by(name=uni).first()
     rentals = Rent.query.filter_by(user_id=user.id).all()
@@ -462,12 +492,16 @@ def myrentals():
     )
 @app.route('/returnmovie/<rent_id>', methods=['POST', 'GET'])
 def returnmovie(rent_id):
+    if 'username' not in session:
+        return redirect(url_for('login_user'))
     return_movie(rent_id)
     return redirect(url_for('myrentals'))
     
 
 @app.route("/add_credit/", methods=['POST','GET'])
 def add_credit():
+    if 'username' not in session:
+        return redirect(url_for('login_user'))
     user = User.query.filter_by(name=session['username']).first()
     amount = request.form.get('amount', type=int)
     ref = request.form.get('redirect', '')
@@ -492,7 +526,9 @@ def login_staff():
             flash('Invalid credentials!', 'error')
             return render_template("login_staff.html")
         else:
-           
+            if request.form.get('remember'):
+                session['st'] = "True"
+                session.permanent = True
             return redirect(url_for('staff'))
             
     return render_template("login_staff.html")
@@ -500,7 +536,8 @@ def login_staff():
 @app.route("/staff", methods=['POST', 'GET'])
 def staff():
     # Check if staff is logged in
-  
+    if 'st' not in session:
+        return redirect(url_for('login_staff'))
         
     # Handle POST request for updating movie stock
     if request.method == 'POST':
@@ -543,12 +580,14 @@ def staff():
     stock_movies = [movie.title for movie in Movie.query.filter_by(stock=0).all()]
     if len(stock_movies)==0:
         return  render_template("staff.html", titles=titles, deadline=deadline, user_name=user_name, user_email=user_email, length=length,out_of_stock_movies=[],order_id=id,warn='n')
-
+    
     return render_template("staff.html", titles=titles, deadline=deadline, user_name=user_name, user_email=user_email, length=length,out_of_stock_movies=stock_movies,order_id=id,warn='n')
-
+    
 
 @app.route("/sendmail/<order_id>", methods=['POST','GET'])
 def sendmail(order_id):
+    if 'st' not in session:
+        return redirect(url_for('login_staff'))
     order = Rent.query.get(order_id)
     user = User.query.get(order.user_id)
     movie = Movie.query.get(order.movie_id)
@@ -564,11 +603,14 @@ def login_manager():
     if request.form['password']!="admin":
         return render_template("login_manager.html", warn="y")
     else:
+        session['manager'] = "True"
         return redirect(url_for('manager'))
   return render_template("login_manager.html")
 
 @app.route("/manager", methods=['POST','GET'])
 def manager():
+    if 'manager' not in session:
+        return redirect(url_for('login_manager'))
     if request.method == 'POST':
       moviename = request.form.get('movieName','')
       if moviename:
@@ -613,6 +655,8 @@ def manager():
 
 @app.route("/total_rentals", methods=['POST','GET'])
 def total_rentals():
+    if 'manager' not in session:
+        return redirect(url_for('login_manager'))
     rentals=Rent.query.filter_by(returned=False).all()
     id=[order.id for order in rentals]
     titles=[(Movie.query.filter_by(id=order.movie_id).first()).title for order in rentals]
@@ -624,6 +668,8 @@ def total_rentals():
 
 @app.route("/delete_user", methods=['POST','GET'])
 def delete_user():
+    if 'manager' not in session:
+        return redirect(url_for('login_manager'))
     if request.method == 'POST':
         role = request.form.get('role', '')
         username = request.form.get('username', '')

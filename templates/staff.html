@@ -13,7 +13,9 @@
         <div class="dropdown">
             <button class="dropdown-item">👤My Account</button>
             <div class="dropdown-content">
-                <a href="{{ url_for('login_staff') }}">Logout</a>
+                <form action="/logout" method="POST">
+                    <input type="submit" value="Logout" class="dropdown-item">
+                </form>
             </div>
         </div>
     </div>
@@ -28,11 +30,10 @@
       </div>
     {% endif %}
   {% endwith %}
-  <h2>Movies Rented Out</h2>
-  {% if warn=='x' %}
-  <p class="center-text"> No Active Rentals are present </p>
-  {% endif %}
-  {% if warn!='x' %}
+    <h2>Movies Rented Out</h2>
+    
+  
+
     <table>
         <thead>
             <tr>
@@ -61,12 +62,8 @@
             {% endfor %}
         </tbody>
     </table>
-    {% endif %}
+
     <h2>Out of Stock Movies</h2>
-    {% if not out_of_stock_movies %}
-    <p class="center-text"> All movies  are in stock </p>
-    {% endif %}
-    {% if out_of_stock_movies %}
     <table>
         <thead>
             <tr>
@@ -83,7 +80,7 @@
             {% endfor %}
         </tbody>
     </table>
-    {% endif %}
+
     <h2>Manage Inventory</h2>
     <div class="form-container">
         <form action="/staff" method="post">

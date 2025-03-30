@@ -16,7 +16,9 @@
             <button class="dropdown-item">Menu</button>
             <div class="dropdown-content">
                 <a href="{{ url_for('manager') }}">Dashboard</a>
-                <a href="{{ url_for('login_manager') }}">Logout</a>
+                <form action="/logout" method="POST">
+                    <input type="submit" value="Logout" class="dropdown-item">
+                </form>
             </div>
         </div>
     </div>
