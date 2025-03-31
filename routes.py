@@ -11,6 +11,10 @@ from flask_login import login_user
 # from recommenders import recommendations
 recommendations = {}
 uni=""
+
+with open('rec_model', 'rb') as file:
+    recommendations = pickle.load(file)
+
 @app.route("/")
 def ho():
     try:
@@ -107,6 +111,7 @@ def login_user():
         if user is None or user.email!=email or user.password!=password:
             return render_template("login_user.html", warn="y")
         else:
+            session.permanent = False
             if request.form.get('remember'):
                 session.permanent=True
             flash('Successfully logged in!','success')
@@ -131,7 +136,7 @@ def home():
     except:
         lm = "Titanic"
     
-    movies = recommendations[lm]
+    movies = recommendations[lm.lower()]
     movies = [Movie.query.filter_by(title=movie).first() for movie in movies]
     movies = [movie for movie in movies if movie is not None]  # Filter out None values
     
@@ -182,7 +187,7 @@ def search():
             matches = []  # No matches
             
         # Get recommendations based on the query
-        rec_titles = recommendations.get(inpu, [])  # List of recommended movie titles
+        rec_titles = recommendations.get(inpu.lower(), [])  # List of recommended movie titles
         rec_objs = []
         
         for title in rec_titles:
@@ -197,7 +202,8 @@ def search():
         all_movies = matches + rec_objs
         
         if not all_movies:
-            return render_template("no_search.html", inpu=inpu)
+            flash('No movies found!', 'error')
+            return render_template("search.html", inpu=inpu, movie_links=[], movie_titles=[], length=0, movie_prices=[], movie_genres=[])
             
         # Prepare data for template
         titles = [movie.title for movie in all_movies]
@@ -205,12 +211,12 @@ def search():
         prices = [movie.price for movie in all_movies]
         genres = [format_genre(movie.genre) for movie in all_movies]
         
-        return render_template("search.html", 
+        return render_template("search.html",
                                inpu=inpu,
-                               movie_titles=titles, 
+                               movie_titles=titles,
                                movie_links=links,
-                               length=len(links), 
-                               movie_prices=prices, 
+                               length=len(links),
+                               movie_prices=prices,
                                movie_genres=genres)
     
     # Handle GET request
@@ -255,17 +261,22 @@ def searchsort():
         if genre and genre != "all":
             lower_genre = genre.lower()
             rec_objs = [movie for movie in rec_objs if lower_genre in movie.genre.lower()]
+            matches = [movie for movie in matches if lower_genre in movie.genre.lower()]
             
         # Apply sorting to recommendations only
         if sort == "price":
             rec_objs = sorted(rec_objs, key=lambda x: x.price)
+            matches = sorted(matches, key=lambda x: x.price)
         elif sort == "rating":
             rec_objs = sorted(rec_objs, key=lambda x: x.rating)
+            matches = sorted(matches, key=lambda x: x.rating)
         elif sort == "release":
             rec_objs = sorted(rec_objs, key=lambda x: x.year)
+            matches = sorted(matches, key=lambda x: x.year)
         else:
             # Default sorting by price
             rec_objs = sorted(rec_objs, key=lambda x: x.price)
+            matches = sorted(matches, key=lambda x: x.price)
         
         # Combine search results and recommendations - matches first, then sorted recommendations
         all_movies = matches + rec_objs
@@ -304,7 +315,7 @@ def view_movie(title):
   # if request.method=='POST':
   #   return redirect(url_for("rent", title=title, warn="n"))
   if Movie.query.filter_by(title=title).first() is None:
-    return render_template("no_search.html", inpu=title)
+    return render_template("404.html", inpu=title), 404
   price=(Movie.query.filter_by(title=title).first()).price
   genre=format_genre((Movie.query.filter_by(title=title).first()).genre)
   overview=(Movie.query.filter_by(title=title).first()).overview
@@ -312,7 +323,7 @@ def view_movie(title):
   rating=(Movie.query.filter_by(title=title).first()).rating
   stock=(Movie.query.filter_by(title=title).first()).stock
   release_date=(Movie.query.filter_by(title=title).first()).year
-  movies = [movie for movie in recommendations[title] if movie != title]
+  movies = [movie for movie in recommendations[title.lower()] if movie != title]
   links=[]
   prices=[]
   genres=[]
@@ -526,8 +537,8 @@ def login_staff():
             flash('Invalid credentials!', 'error')
             return render_template("login_staff.html")
         else:
+            session['st'] = "True"
             if request.form.get('remember'):
-                session['st'] = "True"
                 session.permanent = True
             return redirect(url_for('staff'))
             
@@ -570,6 +581,7 @@ def staff():
                  id=[order.id for order in orders]
                  titles=[(Movie.query.filter_by(id=order.movie_id).first()).title for order in orders]
                  deadline=[order.deadline for order in orders]
+                 deadline=[i.strftime('%Y-%m-%d') for i in deadline]
                  user_name=[(User.query.filter_by(id=order.user_id).first()).name for order in orders]
                  user_email=[(User.query.filter_by(id=order.user_id).first()).email for order in orders]
                  stock_movies = [movie.title for movie in Movie.query.filter_by(stock=0).all()]
@@ -591,7 +603,7 @@ def sendmail(order_id):
     order = Rent.query.get(order_id)
     user = User.query.get(order.user_id)
     movie = Movie.query.get(order.movie_id)
-    Message = f"Dear {user.name},\n\nThis is to remind you that the movie {movie.title} is due for return by {order.deadline}. Please return the movie at the earliest to avoid late fees.\n\nRegards,\nMovie Rental Team"
+    Message = f"Dear {user.name},\n\nThis is to remind you that the movie {movie.title} is due for return by {order.deadline.strftime('%Y-%m-%d')}. Please return the movie at the earliest to avoid late fees.\n\nRegards,\nMovie Rental Team"
     send_mail(user.email, "Movie Rental Reminder", Message)
     flash(f'Mail sent to {user.email} for {movie.title}', 'success')
     return redirect(url_for('staff'))
@@ -661,8 +673,10 @@ def total_rentals():
     id=[order.id for order in rentals]
     titles=[(Movie.query.filter_by(id=order.movie_id).first()).title for order in rentals]
     deadline=[order.deadline for order in rentals]
+    deadline=[i.strftime('%Y-%m-%d') for i in deadline]
     user_name=[(User.query.filter_by(id=order.user_id).first()).name for order in rentals]
     borrowed_date=[order.rented_date for order in rentals]
+    borrowed_date=[i.strftime('%Y-%m-%d') for i in borrowed_date]
     length=len(user_name)
     return render_template("total_rentals.html", id=id,titles=titles, deadline=deadline, user_name=user_name, borrowed_date=borrowed_date, length=length) 
 
@@ -700,7 +714,10 @@ def delete_user():
     
     return render_template("delete_user.html")
 
+
+@app.errorhandler(404)
+def not_found(e):
+  return render_template("404.html"), 404
+
 if __name__ == '__main__':
-    with open('rec_model', 'rb') as file:
-        recommendations = pickle.load(file)
     app.run(debug=True)

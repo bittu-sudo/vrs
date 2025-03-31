@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     for i in model_v1:
 
-        mod[i[0]]=i[1:].tolist()
+        mod[i[0].lower()]=i[1:].tolist()
 
 
 

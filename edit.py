@@ -1,7 +1,13 @@
-import pandas as pd
+import pickle
+# changed the movie names which are used as keys to lowercase in the recommendation model
+# to avoid case sensitivity issues when loading the model
+with open('rec_model', 'rb') as file:
+    recommendations = pickle.load(file)
 
-df = pd.read_csv('movies_metadata.csv')
+changed = {}
 
-df_unique = df.drop_duplicates(subset=['title'])
+for i in recommendations:
+    changed[i.lower()] = recommendations[i]
 
-df_unique.to_csv('movies_metadata.csv', index=False)
+with open('rec_model', 'wb') as file:
+    pickle.dump(changed, file)

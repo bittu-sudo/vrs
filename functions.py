@@ -1,6 +1,6 @@
 from fpdf import FPDF
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from flask import flash,current_app
 from models import db
 from models import User, Movie, Rent
@@ -10,8 +10,8 @@ import ast
 import re
 def rentmovie(user_id, movie_id):
     # Fetch user and movie 
-    user = User.query.get(user_id)
-    movie = Movie.query.get(movie_id)
+    user = db.session.get(User, user_id)
+    movie = db.session.get(Movie, movie_id)
 
     if not user:
         flash("User not found.")
@@ -41,8 +41,8 @@ def rentmovie(user_id, movie_id):
     rent = Rent(
         user_id=user.id,
         movie_id=movie.id,
-        rented_date=datetime.utcnow(),
-        deadline=datetime.utcnow() + timedelta(days=15)
+        rented_date=datetime.now(UTC),
+        deadline=datetime.now(UTC) + timedelta(days=15)
     )
     # Update stock and balance
     movie.stock -= 1
@@ -53,7 +53,7 @@ def rentmovie(user_id, movie_id):
 
     flash("Movie rented successfully!",'success')
     generate_receipt(rent.id)
-
+    return True
 
 
 def search_movies(title):
@@ -98,6 +98,7 @@ def return_movie(order_id):
             order_obj.returned = True
             db.session.commit()
             flash("Movie returned successfully.",'success')
+            return True
         else:
             flash("Order Not Found!",'error')
 
@@ -121,7 +122,7 @@ def send_mail(user_email, subject, body, pdf_path=None):
     sender_server = "smtp.gmail.com"
     sender_port = 587
     sender_email = "moviemartvrs@gmail.com"
-    sender_password = "virs dpsj luau xyct"
+    sender_password = "virs dpsj luau xcyt"
 
     # Create message
     message = MIMEMultipart()
@@ -141,29 +142,35 @@ def send_mail(user_email, subject, body, pdf_path=None):
         message.attach(part)
     
     context = ssl.create_default_context()
-    with smtplib.SMTP(sender_server, sender_port) as server:
+    try:
+        server = smtplib.SMTP(sender_server, sender_port)
         server.starttls(context=context)
         server.login(sender_email, sender_password)
 
         # Send email
         server.send_message(message)
-
-
-
-
+        flash("Email sent successfully.",'success')
+        return True
+        
+    except Exception:
+        flash("Email sending failed.",'error')
+        return False
+    finally:
+        server.quit()
 
 def add_movie(title, stock, genre="", rating=5, year=0, img_path="", price=0, overview=""):
-        movie_obj = Movie.query.filter_by(title=title).first()
-        if movie_obj is not None:
-            movie_obj.stock += stock
-            if price!=0:
-                movie_obj.price = price
-            db.session.commit()
-        else:
-            movie_obj = Movie(title=title, genre=genre, rating=rating, price=price, stock=stock, year=year, posterpath=img_path, overview=overview)
-            db.session.add(movie_obj)
-            db.session.commit()
-            flash("Movie Added Successfully!",'success')
+    movie_obj = Movie.query.filter_by(title=title).first()
+    if movie_obj is not None:
+        movie_obj.stock += stock
+        if price!=0:
+            movie_obj.price = price
+        db.session.commit()
+    else:
+        movie_obj = Movie(title=title, genre=genre, rating=rating, price=price, stock=stock, year=year, posterpath=img_path, overview=overview)
+        db.session.add(movie_obj)
+        db.session.commit()
+        flash("Movie Added Successfully!",'success')
+    return True
     
 def format_genre(genre_string):
     try:
@@ -186,6 +193,9 @@ def format_genre(genre_string):
 def generate_receipt(order_id):
     try:
         order_obj = Rent.query.filter_by(id=order_id).first()
+        if order_obj is None:
+            flash("Order not found.", "error")
+            return None
         movie_obj = Movie.query.filter_by(id=order_obj.movie_id).first()
         user_obj = User.query.filter_by(id=order_obj.user_id).first()
         
