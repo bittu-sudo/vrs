@@ -11,13 +11,11 @@
         <div class="website-name">MovieMart</div>
         <div class="dashboard-name">Manager Dashboard - Orders Overview</div>
         <div class="dropdown">
-            <button class="dropdown-item">Menu &#9662;</button>
+            <button class="dropdown-item">👤My Account</button>
             <div class="dropdown-content">
                 <a href={{ url_for('manager') }}>Dashboard</a>
                 <a href={{ url_for('delete_user') }}>Delete user</a>
-                <form action="/logout" method="POST">
-                    <input type="submit" value="Logout" class="dropdown-item">
-                </form>
+                <a href="/logout">Logout</a>
             </div>
         </div>
     </div>

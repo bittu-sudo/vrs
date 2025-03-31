@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>" "</title>
+    <link rel="stylesheet" href="../static/layout.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>MOVIE MART</h1>
+            </div>
+            
+            <div class="search-bar">
+                <form action="/search" method="GET">
+                    <input type="text" name="query" placeholder="Search for movies...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="user-nav">
+                <div class="nav-item">
+                    <a href="/home" class="nav-link">
+                        Home
+                   </a>
+                </div>
+            <div class="user-nav">
+                <div class="nav-item">
+                    <a href="/cart" class="nav-link">
+                        <span class="cart-icon">🛒</span> Cart
+                    </a>
+                </div>
+                
+                <div class="dropdown">
+                    <button class="dropbtn">👤 My Account</button>
+                    <div class="dropdown-content">
+                        <a href="/myrentals">My Rentals</a>
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+      <!-- No Results Message -->
+      <main class="no-results-page">
+        <h2>No Results Found</h2>
+        <p>We couldn't find any movies matching your search.</p>
+
+        <!-- Search Again -->
+        <form action="/search" method="GET" class="search-again-form">
+            <input type="text" name="query" placeholder="Try searching again...">
+            <button type="submit">Search Again</button>
+        </form>
+
+        <!-- Back to Home -->
+        <p><a href="/home">Go back to Home</a></p>
+    </main>
+   
+</body>
+</html>

@@ -122,7 +122,7 @@ def send_mail(user_email, subject, body, pdf_path=None):
     sender_server = "smtp.gmail.com"
     sender_port = 587
     sender_email = "moviemartvrs@gmail.com"
-    sender_password = "virs dpsj luau xcyt"
+    sender_password = "mtij gjyc bnis syvy"
 
     # Create message
     message = MIMEMultipart()
@@ -401,7 +401,7 @@ def generate_receipt(order_id):
             # Send receipt by email
             try:
                 send_mail(user_obj.email,"RECEIPT FOR MOVIE RENT","",receipt_path)
-                flash("Receipt Generated Successfully and sent to your email.")
+                flash("Receipt Generated Successfully and sent to your email.","success")
             except Exception as e:
                 flash(f"Receipt generated but email sending failed: {str(e)}")
                 

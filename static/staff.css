@@ -139,6 +139,36 @@ input[type="submit"]:hover {
     font-size: 1.2em;
     color: white; /* Ensure visibility */
 }
+/* General button styling */
+.btn-notify {
+    background-color: red; /* Blue background */
+    color: black; /* White text */
+    border: none; /* Remove default border */
+    padding: 10px 20px; /* Add padding for size */
+    font-size: 16px; /* Font size */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+}
+
+/* Hover effect */
+.btn-notify:hover {
+    background-color: black; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+/* Active state (when clicked) */
+.btn-notify:active {
+    background-color: white; /* Even darker blue on click */
+    transform: scale(0.95); /* Slightly shrink the button on click */
+}
+
+/* Disabled state (optional) */
+.btn-notify:disabled {
+    background-color: #cccccc; /* Gray background for disabled state */
+    color: #666666; /* Light gray text for disabled state */
+    cursor: not-allowed; /* Change cursor to indicate disabled state */
+}
 
 /* Fade-out animation without movement */
 @keyframes fadeOut {
