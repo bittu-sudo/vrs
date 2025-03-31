@@ -32,15 +32,11 @@
                     </a>
                 </div>
                 
-                <div class="nav-item">
-                    <div class="nav-link dropdown-toggle">
-                        <span class="menu-icon">👤</span> My Account
-                    </div>
-                    <div class="dropdown-menu">
-                        <a href="/rentals" class="dropdown-item">My Rentals</a>
-                        <form action="/logout" method="POST">
-                            <input type="submit" value="Logout" class="dropdown-item">
-                        </form>
+                <div class="dropdown">
+                    <button class="dropbtn">👤 My Account</button>
+                    <div class="dropdown-content">
+                        <a href="/myrentals">My Rentals</a>
+                        <a href="/logout">Logout</a>
                     </div>
                 </div>
             </div>

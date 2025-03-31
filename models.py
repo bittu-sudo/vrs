@@ -11,15 +11,7 @@ app = Flask(__name__)
 # Set app configuration
 app.config['SECRET_KEY'] = '229b845d2e364ca8a032e35c104f69b1'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-app.config.update(
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=587,
-    MAIL_USE_SSL=True,
-    MAIL_USERNAME='moviemartvrs@gmail.com',
-    MAIL_PASSWORD='virs dpsj luau xcyt',
-)
 
-# Initialize SQLAlchemy database
 db = SQLAlchemy()
 db.init_app(app)
 

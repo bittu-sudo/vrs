@@ -526,8 +526,8 @@ def login_staff():
             flash('Invalid credentials!', 'error')
             return render_template("login_staff.html")
         else:
+            session['st'] = "True"
             if request.form.get('remember'):
-                session['st'] = "True"
                 session.permanent = True
             return redirect(url_for('staff'))
             

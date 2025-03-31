@@ -41,8 +41,8 @@ def rentmovie(user_id, movie_id):
     rent = Rent(
         user_id=user.id,
         movie_id=movie.id,
-        rented_date=datetime.utcnow(),
-        deadline=datetime.utcnow() + timedelta(days=15)
+        rented_date=datetime.utcnow().date(),
+        deadline=datetime.utcnow().date() + timedelta(days=15)
     )
     # Update stock and balance
     movie.stock -= 1
@@ -121,7 +121,7 @@ def send_mail(user_email, subject, body, pdf_path=None):
     sender_server = "smtp.gmail.com"
     sender_port = 587
     sender_email = "moviemartvrs@gmail.com"
-    sender_password = "virs dpsj luau xyct"
+    sender_password = "mtij gjyc bnis syvy"
 
     # Create message
     message = MIMEMultipart()
@@ -391,7 +391,7 @@ def generate_receipt(order_id):
             # Send receipt by email
             try:
                 send_mail(user_obj.email,"RECEIPT FOR MOVIE RENT","",receipt_path)
-                flash("Receipt Generated Successfully and sent to your email.")
+                flash("Receipt Generated Successfully and sent to your email.","success")
             except Exception as e:
                 flash(f"Receipt generated but email sending failed: {str(e)}")
                 
