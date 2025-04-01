@@ -464,19 +464,23 @@ def myrentals():
     active_rentals = [rental for rental in rentals if rental is not None and not rental.returned]
     returned_rentals = [rental for rental in rentals if rental is not None and rental.returned]
     
+      
     # Process active rentals
     active_titles = [(Movie.query.filter_by(id=movie.movie_id).first()).title for movie in active_rentals]
     active_order = [order for order in active_rentals]
     active_borrow_date = [order.rented_date for order in active_rentals]
+    active_borrow_date=[i.strftime('%Y-%m-%d') for i in active_borrow_date]
     active_deadline = [order.deadline for order in active_rentals]
+    active_deadline=[i.strftime('%Y-%m-%d') for i in active_deadline]
     active_length = len(active_titles)
     
     # Process returned rentals
     returned_titles = [(Movie.query.filter_by(id=movie.movie_id).first()).title for movie in returned_rentals]
     returned_borrow_date = [order.rented_date for order in returned_rentals]
+    returned_borrow_date=[i.strftime('%Y-%m-%d') for i in returned_borrow_date]
     returned_deadline = [order.deadline for order in returned_rentals]
+    returned_deadline=[i.strftime('%Y-%m-%d') for i in returned_deadline]
     returned_length = len(returned_titles)
-    
     balance = user.balance
     
     if request.method == "POST":
