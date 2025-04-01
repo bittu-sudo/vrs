@@ -14,8 +14,8 @@ class RoutesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'MOVIE MART', response.data)
 
-    def test_login_user_route(self):
-        """Test a user login route. Adjust based on actual routes."""
+    def test_login_route(self):
+        """Test a  login route. Adjust based on actual routes."""
         response = self.app.get('/login_user')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'User Login', response.data)

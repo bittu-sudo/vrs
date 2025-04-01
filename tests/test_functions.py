@@ -8,27 +8,27 @@ from flask_sqlalchemy import SQLAlchemy
 from models import User, Movie, Rent
 from functions import rentmovie, return_movie, search_movies, add_movie, generate_receipt, send_mail
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-db.init_app(app)
 
 
 class TestFunctions(unittest.TestCase):
 
     def setUp(self):
         """Set up mock data before each test."""
+        self.app = Flask(__name__)
+        self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        db.init_app(self.app)
 
-        self.client = app.test_client()
+        self.client = self.app.test_client()
 
-        self.app_context = app.app_context()
+        self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()  # Create all tables
 
         # Create and commit user and movie first
         self.user = User(name="testuser", email="test@example.com", password="pass", balance=1000)
-        self.movie = Movie(title="Inception", genre="Sci-Fi", stock=5)
-        self.rented_movie = Movie(title="Inception2", genre="Sci-Fi", stock=5)
+        self.movie = Movie(title="Inception", genre="Sci-Fi", stock=5, price=100)
+        self.rented_movie = Movie(title="Inception2", genre="Sci-Fi", stock=5 , price=100)
         db.session.add(self.user)
         db.session.add(self.movie)
         db.session.add(self.rented_movie)
@@ -71,7 +71,7 @@ class TestFunctions(unittest.TestCase):
         mock_add.assert_called_once()
         mock_commit.assert_called_once()
         self.assertEqual(self.movie.stock, 4)
-
+    
     @patch("functions.flash")
     @patch("functions.db.session.commit")
     @patch("functions.Movie.query.get")
@@ -90,7 +90,26 @@ class TestFunctions(unittest.TestCase):
         # Verify results
         self.assertIsNone(result)
         mock_commit.assert_not_called()
+        
+    @patch("functions.flash")
+    @patch("functions.db.session.commit")
+    @patch("functions.Movie.query.get")
+    @patch("functions.User.query.get")
+    @patch("functions.Rent.query.filter_by")
+    def test_rent_movie_insufficient_balance(self, mock_rent_filter_by, mock_user_get, mock_movie_get, mock_commit, mock_flash):
+        """Test renting with no stock available."""
+        # Configure mocks
+        mock_user_get.return_value = self.user
+        mock_movie_get.return_value = self.movie
+        self.user.balance = 0
+        mock_rent_filter_by.return_value.first.return_value = None
 
+        result = rentmovie(self.user.id, self.movie.id)
+
+        # Verify results
+        self.assertIsNone(result)
+        mock_commit.assert_not_called()
+        
     @patch("functions.flash")
     @patch("functions.db.session.commit")
     @patch("functions.db.session.delete")
