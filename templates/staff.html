@@ -28,10 +28,12 @@
         {% endfor %}
       </div>
     {% endif %}
-  {% endwith %}
+    {% endwith %}
     <h2>Movies Rented Out</h2>
     
-  
+    {% if length == 0 %}
+    <p>No movies are currently rented out.</p>
+    {% else %}
 
     <table>
         <thead>
@@ -62,7 +64,14 @@
         </tbody>
     </table>
 
+    {% endif %}
+
     <h2>Out of Stock Movies</h2>
+
+    {% if warn == 'y' %}
+    <p>All movies are in stock.</p>
+    {% else %}
+
     <table>
         <thead>
             <tr>
@@ -79,6 +88,8 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% endif %}
 
     <h2>Manage Inventory</h2>
     <div class="form-container">

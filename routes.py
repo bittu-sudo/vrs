@@ -106,7 +106,7 @@ def join():
         db.session.commit()
         flash('Successfully registered! Please log in.','success')
         return redirect(url_for('login_staff'))
-  return render_template("join.html", "")
+  return render_template("join.html", email="")
 
 
 @app.route("/login_user", methods=['POST','GET'])
@@ -627,13 +627,19 @@ def staff():
                  stock_movies = [movie.title for movie in Movie.query.filter_by(stock=0).all()]
                  length=len(user_name)
     else:
-        return  render_template("staff.html",warn='x')
+        titles = []
+        deadline = []
+        user_name = []
+        user_email = []
+        length = 0
+        id = []
     # Get out of stock movies
     stock_movies = [movie.title for movie in Movie.query.filter_by(stock=0).all()]
+    warn = 'n'
     if len(stock_movies)==0:
-        return  render_template("staff.html", titles=titles, deadline=deadline, user_name=user_name, user_email=user_email, length=length,out_of_stock_movies=[],order_id=id,warn='n')
+        warn = 'y'
     
-    return render_template("staff.html", titles=titles, deadline=deadline, user_name=user_name, user_email=user_email, length=length,out_of_stock_movies=stock_movies,order_id=id,warn='n')
+    return render_template("staff.html", titles=titles, deadline=deadline, user_name=user_name, user_email=user_email, length=length,out_of_stock_movies=stock_movies,order_id=id,warn=warn)
     
 
 @app.route("/sendmail/<order_id>", methods=['POST','GET'])

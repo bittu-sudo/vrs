@@ -12,15 +12,15 @@
             <div class="logo">MOVIEMART</div>
             <div class="buttons">
                 <a href="/login_user"><button class="btn login-btn">Log In</button></a>
-                <a href="/join"><button class="btn signin-btn">Sign In</button></a>
+                <a href="/join"><button class="btn signin-btn">Sign Up</button></a>
             </div>
         </div>
         <div class="content">
             <h1>Unlimited movies</h1>
             <h3>Watch anywhere. Return anytime.</h3>
             <p>Ready to watch? Enter your email to gain unlimited experience</p>
-            <form class="email-form">
-                <input type="email" placeholder="Email address" required>
+            <form class="email-form" action="/welcome" method="POST">
+                <input type="email" id="email" name="email" placeholder="Email address" required>
                 <button type="submit">Get Started</button>
             </form>
         </div>
