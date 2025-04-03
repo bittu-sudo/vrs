@@ -13,7 +13,7 @@ class RoutesTestCase(unittest.TestCase):
         response = self.app.get('/home')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'MOVIE MART', response.data)
-
+     
     def test_login_route(self):
         """Test a  login route. Adjust based on actual routes."""
         response = self.app.get('/login_user')
@@ -22,7 +22,7 @@ class RoutesTestCase(unittest.TestCase):
         response = self.app.get('/login_staff')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Staff Login', response.data)
-
+    
     def test_search_route(self):
         """Test a POST request."""
         response = self.app.post('/search', data={"query": "Jumanji"})  # Adjust endpoint
