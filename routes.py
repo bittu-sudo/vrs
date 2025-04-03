@@ -48,7 +48,20 @@ def ho():
         db.session.rollback()  # Roll back the session on error
         # Continue even if movies can't be loaded
 
-    return render_template("login_user.html")
+    return render_template("welcome.html")
+
+@app.route("/welcome", methods=['POST','GET'])
+def welcome():
+    if 'username' in session:
+        return redirect(url_for('home'))
+    if request.method=='POST':
+        email=request.form['email']
+        user=User.query.filter_by(email=email).first()
+        if user is None:
+            return render_template("join.html", email=email)
+        else:
+            return redirect(url_for('login_user'))
+    return render_template("welcome.html")
 
 @app.route("/join", methods=['POST','GET'])
 def join():
@@ -56,29 +69,29 @@ def join():
     return redirect(url_for('home'))
   if request.method=='POST':
     Username=request.form['username']
+    email=request.form['email']
     user=User.query.filter_by(name=Username).first()
     if user is not None:
       flash('Username already taken!Try with another one','error')
-      return render_template("join.html")
+      return render_template("join.html", email=email)
     global uni
     uni=Username
     Role=request.form['role']
-    email=request.form['email']
     if Role=='User':
      user=User.query.filter_by(email=email).first()
      if user:
         flash('Email already taken!Try with another one','error')
-        return render_template("join.html")
+        return render_template("join.html", email=email)
     elif Role=='Staff':
      staff=Staff.query.filter_by(email=email).first()
      if staff:
         flash('Email already taken!Try with another one','error')
-        return render_template("join.html")
+        return render_template("join.html", email="")
     Password=request.form['password']
     rePassword=request.form['repassword']
     if Password!=rePassword:
       flash('Passwords do not match!','error')
-      return render_template("join.html")
+      return render_template("join.html", email=email)
     else:
       
       if Role=='User':
@@ -93,7 +106,7 @@ def join():
         db.session.commit()
         flash('Successfully registered! Please log in.','success')
         return redirect(url_for('login_staff'))
-  return render_template("join.html")
+  return render_template("join.html", "")
 
 
 @app.route("/login_user", methods=['POST','GET'])
@@ -126,7 +139,7 @@ def logout():
     session.pop('manager', None)
     session.clear()
     session.permanent = False
-    return redirect(url_for('login_user'))
+    return redirect(url_for('welcome'))
   
 @app.route("/home", methods=['POST','GET'])
 def home():
