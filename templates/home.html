@@ -99,7 +99,11 @@
                 </div>
                 <div class="movie-info">
                     <h3 class="movie-title">{{ movie_titles[i] }}</h3>
-                    <p class="movie-genre">{{ movie_genres[i] }}</p>
+                    <p class="movie-genre">
+                        {% for genre in movie_genres[i] %}
+                        {{ genre }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
                     <div class="movie-actions">
                         <a href="{{ url_for('rent_movie', title=movie_titles[i]) }}" class="btn-rent">Rent ₹{{movie_prices[i]}}</a>
                         <a href="{{ url_for('addcart', title=movie_titles[i]) }}" class="btn-rent">Add to cart</a>

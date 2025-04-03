@@ -2,11 +2,12 @@ from flask import Flask, render_template, request,session
 from models import app, db , User, Staff, Movie, Rent
 import bcrypt
 from models import User, Staff, Movie, Rent
-from functions import rentmovie, add_movie ,search_movies, return_movie, send_mail, format_genre
+from functions import rentmovie, add_movie ,search_movies, return_movie, send_mail, format_genre, sort_movies_by_date
 from flask import flash, redirect, url_for 
 import pandas as pd
 import pickle
 from flask_login import login_user
+from functools import cmp_to_key
 
 # from recommenders import recommendations
 recommendations = {}
@@ -54,11 +55,16 @@ def ho():
 def welcome():
     if 'username' in session:
         return redirect(url_for('home'))
+    if 'st' in session:
+        return redirect(url_for('staff'))
+    if 'manager' in session:
+        return redirect(url_for('manager'))
+    
     if request.method=='POST':
         email=request.form['email']
         user=User.query.filter_by(email=email).first()
         if user is None:
-            return render_template("join.html", email=email)
+            return redirect(url_for('join', email=email))
         else:
             return redirect(url_for('login_user'))
     return render_template("welcome.html")
@@ -67,6 +73,10 @@ def welcome():
 def join():
   if 'username' in session:
     return redirect(url_for('home'))
+  if 'st' in session:
+    return redirect(url_for('staff'))
+  if 'manager' in session:
+    return redirect(url_for('manager'))
   if request.method=='POST':
     Username=request.form['username']
     email=request.form['email']
@@ -115,12 +125,11 @@ def login_user():
         return redirect(url_for('home'))
     if request.method=='POST':
         username=request.form['username'].strip()
-        email=request.form['email']
         uni=username
         password=request.form['password']
         user=User.query.filter_by(name=username).first()
         remember = request.form.get('remember') 
-        if user is None or user.email!=email or user.password!=password:
+        if user is None or not user.check_password(password):
             return render_template("login_user.html", warn="y")
         else:
             session['username']=username
@@ -299,11 +308,11 @@ def searchsort():
             rec_objs = sorted(rec_objs, key=lambda x: x.price)
             matches = sorted(matches, key=lambda x: x.price)
         elif sort == "rating":
-            rec_objs = sorted(rec_objs, key=lambda x: x.rating)
-            matches = sorted(matches, key=lambda x: x.rating)
+            rec_objs = sorted(rec_objs, key=lambda x: x.rating, reverse=True)  # Higher ratings first
+            matches = sorted(matches, key=lambda x: x.rating, reverse=True)  # Higher ratings first
         elif sort == "release":
-            rec_objs = sorted(rec_objs, key=lambda x: x.year)
-            matches = sorted(matches, key=lambda x: x.year)
+            rec_objs = sort_movies_by_date(rec_objs)
+            matches = sort_movies_by_date(matches)
         else:
             # Default sorting by price
             rec_objs = sorted(rec_objs, key=lambda x: x.price)
@@ -355,6 +364,7 @@ def view_movie(title):
   stock=(Movie.query.filter_by(title=title).first()).stock
   release_date=(Movie.query.filter_by(title=title).first()).year
   movies = [movie for movie in recommendations[title.lower()] if movie != title]
+  movies = [movie for movie in movies if Movie.query.filter_by(title=movie).first() is not None]
   links=[]
   prices=[]
   genres=[]
@@ -362,7 +372,7 @@ def view_movie(title):
    links=[(Movie.query.filter_by(title=movie).first()).posterpath for movie in movies]
    prices=[(Movie.query.filter_by(title=movie).first()).price for movie in movies]
    genres=[format_genre((Movie.query.filter_by(title=movie).first()).genre) for movie in movies]
-  return render_template("view_movie.html", title=title, price=str(price), genre=str(genre), release_date=str(release_date),overview=overview, posterpath=str(posterpath), rating=str(rating), stock=str(stock),movie_links=links, movie_titles=movies,movie_prices=prices,movie_genres=genres,length=len(movies))
+  return render_template("view_movie.html", title=title, price=str(price), genre=genre, release_date=str(release_date),overview=overview, posterpath=str(posterpath), rating=str(rating), stock=str(stock),movie_links=links, movie_titles=movies,movie_prices=prices,movie_genres=genres,length=len(movies))
 
 @app.route('/rent_movie/<title>', methods=['POST', 'GET'])
 def rent_movie(title):
@@ -427,16 +437,17 @@ def addcart(title):
     rating = movie.rating
     stock = movie.stock
     if stock==0:
-        return render_template("view_movie.html", title=title, price=str(price),rating=str(rating), stock=str(stock),warn="stock")
+        flash(f'{title} is out of stock!', 'error')
+        return redirect(url_for('home'))
     
     if 'cart' not in session:
         session['cart'] = []
     if title in session['cart']:
         flash(f'{title} already in cart!', 'error')
-        return redirect(url_for('cart'))
+        return redirect(url_for('home'))
     session['cart'].append(title)
     flash(f'{title} added to cart!', 'success')
-    return redirect(url_for('cart'))
+    return redirect(url_for('home'))
 
 @app.route('/removecart/<title>', methods=['POST', 'GET'])
 def removecart(title):
@@ -565,6 +576,8 @@ def add_credit():
     return redirect(url_for('myrentals'))
 @app.route("/login_staff", methods=['POST', 'GET'])
 def login_staff():
+    if 'st' in session:
+        return redirect(url_for('staff'))
     if request.method == 'POST':
         staffname = request.form.get('username')
         email = request.form.get('email')
@@ -573,7 +586,7 @@ def login_staff():
         
         staff = Staff.query.filter_by(name=staffname).first()
         
-        if (staff is None) or (staff.email != email) or (staff.password != password):
+        if (staff is None) or (staff.email != email) or (staff.check_password(password) == False):
             flash('Invalid credentials!', 'error')
             return render_template("login_staff.html")
         else:

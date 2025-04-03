@@ -89,6 +89,19 @@ def search_movies(title):
     except Exception as e:
         flash(f"Search error: {str(e)}")
         return None
+
+def sort_movies_by_date(movies):
+    if not movies:
+        return []
+    try:
+        none_movies = [movie for movie in movies if movie.year is None]
+        sorted_movies = [movie for movie in movies if movie.year is not None]
+        sorted_movies = sorted(sorted_movies, key=lambda x: x.year if isinstance(x.year, datetime) else datetime.strptime(x.year, "%d-%m-%Y"), reverse=True)
+        sorted_movies.extend(none_movies)
+        return sorted_movies
+    except Exception as e:
+        flash(f"Sorting error: {str(e)}")
+        return []
     
 def return_movie(order_id):        
         order_obj = Rent.query.filter_by(id=order_id).first()

@@ -27,9 +27,12 @@ class User(db.Model):
     def __init__(self, name, email, password, balance=1000, lastmovie=""):
         self.name=name
         self.email=email
-        self.password=password
+        self.password = generate_password_hash(password)
         self.balance=balance
         self.lastmovie=lastmovie
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class Staff(db.Model):
@@ -41,7 +44,10 @@ class Staff(db.Model):
     def __init__(self, name, email, password):
         self.name = name
         self.email = email
-        self.password=password
+        self.password = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
