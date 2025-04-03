@@ -22,7 +22,7 @@ def ho():
         if Movie.query.first() is None:
             df = pd.read_csv('/home/sathwik/first_proj/movies_metadata.csv', low_memory=False)
             df['poster_path'] = df['poster_path'].fillna("")  # Replace NaN with empty string
-            df.loc[df['poster_path'].str.startswith("/"), 'poster_path'] = "https://img.lovepik.com/background/20211029/medium/lovepik-film-festival-simple-shooting-videotape-poster-background-image_605811936.jpg"
+            df.loc[df['poster_path'].str.startswith("/"), 'poster_path'] = "poster.jpeg"
 
             # Instead of bulk saving, add movies one by one
             for index, row in df.iterrows():
@@ -144,19 +144,38 @@ def logout():
 @app.route("/home", methods=['POST','GET'])
 def home():
     user = User.query.filter_by(name=session.get('username')).first()
+    
+    # Get the last movie with fallback to "Titanic"
     try:
-        lm = user.lastmovie
+        lm = user.lastmovie if user and user.lastmovie else "Titanic"
     except:
         lm = "Titanic"
     
-    movies = recommendations[lm.lower()]
-    movies = [Movie.query.filter_by(title=movie).first() for movie in movies]
-    movies = [movie for movie in movies if movie is not None]  # Filter out None values
+    # Safely get recommendations with error handling
+    try:
+        movie_key = lm.lower()
+        if movie_key in recommendations:
+            movie_list = recommendations[movie_key]
+        else:
+            # Fallback to a known existing key or a list of default movies
+            default_key = "titanic"  # Make sure this key exists in your recommendations
+            movie_list = recommendations.get(default_key, ["Titanic", "Avatar", "The Godfather", "Pulp Fiction", "The Dark Knight"])
+    except Exception as e:
+        print(f"Error getting recommendations: {e}")
+        # Fallback to a list of default movies
+        movie_list = ["Titanic", "Avatar", "The Godfather", "Pulp Fiction", "The Dark Knight"]
+    
+    # Get movie objects from database
+    movies = []
+    for movie_title in movie_list:
+        movie = Movie.query.filter_by(title=movie_title).first()
+        if movie is not None:
+            movies.append(movie)
     
     # Default sorting
     movies = sorted(movies, key=lambda x: x.price)
     
-    if request.method == 'POST':  
+    if request.method == 'POST':
         genre = request.form.get('genre')
         sort = request.form.get('sort')
         
@@ -165,14 +184,14 @@ def home():
             # Convert genre to lowercase for case-insensitive comparison
             lower_genre = genre.lower()
             movies = [movie for movie in movies if lower_genre in movie.genre.lower()]
-        
+            
         # Apply sorting regardless of genre filter
         if sort == "price":
             movies = sorted(movies, key=lambda x: x.price)
         elif sort == "rating":
-            movies = sorted(movies, key=lambda x: x.rating)
+            movies = sorted(movies, key=lambda x: x.rating, reverse=True)  # Higher ratings first
         elif sort == "release":
-            movies = sorted(movies, key=lambda x: x.year)
+            movies = sorted(movies, key=lambda x: x.year, reverse=True)  # Newest first
     
     # Prepare data for template
     titles = [movie.title for movie in movies]
@@ -180,9 +199,8 @@ def home():
     prices = [movie.price for movie in movies]
     genres = [format_genre(movie.genre) for movie in movies]
     
-    return render_template("home.html", movie_titles=titles, movie_links=links, 
+    return render_template("home.html", movie_titles=titles, movie_links=links,
                           length=len(links), movie_prices=prices, movie_genres=genres)
-
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
@@ -477,31 +495,36 @@ def myrentals():
     active_rentals = [rental for rental in rentals if rental is not None and not rental.returned]
     returned_rentals = [rental for rental in rentals if rental is not None and rental.returned]
     
+      
     # Process active rentals
     active_titles = [(Movie.query.filter_by(id=movie.movie_id).first()).title for movie in active_rentals]
     active_order = [order for order in active_rentals]
     active_borrow_date = [order.rented_date for order in active_rentals]
+    active_borrow_date=[i.strftime('%Y-%m-%d') for i in active_borrow_date]
     active_deadline = [order.deadline for order in active_rentals]
+    active_deadline=[i.strftime('%Y-%m-%d') for i in active_deadline]
     active_length = len(active_titles)
     
     # Process returned rentals
     returned_titles = [(Movie.query.filter_by(id=movie.movie_id).first()).title for movie in returned_rentals]
     returned_borrow_date = [order.rented_date for order in returned_rentals]
+    returned_borrow_date=[i.strftime('%Y-%m-%d') for i in returned_borrow_date]
     returned_deadline = [order.deadline for order in returned_rentals]
+    returned_deadline=[i.strftime('%Y-%m-%d') for i in returned_deadline]
     returned_length = len(returned_titles)
-    
     balance = user.balance
     
     if request.method == "POST":
         rating = request.form.get('rating')  # Use .get() to avoid KeyError
         title_sel = request.form.get('title')  # Get selected movie title
         if not rating or not title_sel:  # Ensure both fields exist
-            flash("Please select a rating and movie.")
+            flash("Please select a rating and movie.","error")
             return redirect(url_for("myrentals"))
         movie = Movie.query.filter_by(title=title_sel).first()
         if movie:
             movie.rating = (float(movie.rating) + float(rating)) / 2
             db.session.commit()
+            flash("rating submitted sucessfully!","success")
             return redirect(url_for("myrentals"))
     
     return render_template(

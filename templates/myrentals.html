@@ -28,8 +28,11 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <h1>MOVIE MART</h1>
+                <form action="/home" method="GET">
+                    <button type="submit" class="logo-button">MOVIE MART</button>
+                </form>
             </div>
+            
             <div class="search-bar">
                 <form action="/search" method="POST">
                     <input type="text" name="query" placeholder="Search for movies...">
@@ -48,7 +51,6 @@
                 <div class="dropdown">
                     <button class="dropbtn">👤 My Account</button>
                     <div class="dropdown-content">
-                        <a href="/myrentals">My Rentals</a>
                         <a href="/logout">Logout</a>
                     </div>
                 </div>

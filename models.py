@@ -24,7 +24,7 @@ class User(db.Model):
     rents = db.relationship('Rent', backref='user')
     lastmovie=db.Column(db.String(100))
 
-    def __init__(self, name, email, password, balance=1000, lastmovie="Titanic"):
+    def __init__(self, name, email, password, balance=1000, lastmovie=""):
         self.name=name
         self.email=email
         self.password=password

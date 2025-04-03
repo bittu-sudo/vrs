@@ -29,6 +29,6 @@ class RoutesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Search results', response.data)
         self.assertIn(b'Jumanji', response.data)  # Adjust expected response
-
+    
 if __name__ == '__main__':
     unittest.main()

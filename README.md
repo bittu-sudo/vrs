@@ -24,8 +24,8 @@ Video Rental System (VRS) is an online portal that allows customers to rent  mov
 
 ## Technologies Used
 - **Backend:** Flask-SQLAlchemy
-- **Frontend:** HTML, CSS, JavaScript (Future scope: React.js/Next.js)
-- **Database:** SQLite/PostgreSQL
+- **Frontend:** HTML, CSS, JavaScript 
+- **Database:** SQLite
 - **Authentication:** Flask-Login
 - **PDF Invoices:** FPDF
 - **Recommendation System (Future Scope):** TF-IDF & Cosine Similarity for personalized movie suggestions
@@ -33,11 +33,11 @@ Video Rental System (VRS) is an online portal that allows customers to rent  mov
 ## Installation
 1. Clone the repository:
    ```sh
-   git clone 
+   git clone https://github.com/bittu-sudo/vrs
    ```
 2. Navigate to the project folder:
    ```sh
-   cd 
+   cd vrs
    ```
 3. Set up a virtual environment (optional but recommended):
    ```sh
