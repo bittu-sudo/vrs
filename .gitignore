@@ -7,5 +7,5 @@ dist/
 htmlcov/
 .tox/
 docs/_build/
-instance/db.sqlite3
+instance/
 Receipts/
