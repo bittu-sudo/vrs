@@ -90,13 +90,44 @@ def search_movies(title):
         flash(f"Search error: {str(e)}")
         return None
 
+def get_date(year):
+    if year is None:
+        return None
+    try:
+        if isinstance(year, datetime):
+            return year.date()
+        if isinstance(year, str) and len(year) == 4:
+            return datetime.strptime(year, "%Y").date()
+        if isinstance(year, str) and len(year) == 10 and year.count('-') == 2:
+            if year[4] == '-':
+                return datetime.strptime(year, "%Y-%m-%d").date()
+            else:
+                return datetime.strptime(year, "%d-%m-%Y").date()
+        if isinstance(year, str) and len(year) == 10 and year.count('/') == 2:
+            if year[4] == '/':
+                return datetime.strptime(year, "%Y/%m/%d").date()
+            else:
+                return datetime.strptime(year, "%d/%m/%Y").date()
+        if isinstance(year, str) and len(year) == 10 and year.count('.') == 2:
+            if year[4] == '.':
+                return datetime.strptime(year, "%Y.%m.%d").date()
+            else:
+                return datetime.strptime(year, "%d.%m.%Y").date()
+        if isinstance(year, str) and len(year) == 10 and year.count(':') == 2:
+            if year[4] == ':':
+                return datetime.strptime(year, "%Y:%m:%d").date()
+            else:
+                return datetime.strptime(year, "%d:%m:%Y").date()
+    except ValueError:
+        return None
+
 def sort_movies_by_date(movies):
     if not movies:
         return []
     try:
-        none_movies = [movie for movie in movies if movie.year is None]
-        sorted_movies = [movie for movie in movies if movie.year is not None]
-        sorted_movies = sorted(sorted_movies, key=lambda x: x.year if isinstance(x.year, datetime) else datetime.strptime(x.year, "%d-%m-%Y"), reverse=True)
+        none_movies = [movie for movie in movies if not get_date(str(movie.year))]
+        sorted_movies = [movie for movie in movies if get_date(str(movie.year))]
+        sorted_movies = sorted(sorted_movies, key=lambda x: get_date(str(x.year)), reverse=True)
         sorted_movies.extend(none_movies)
         return sorted_movies
     except Exception as e:

@@ -34,5 +34,6 @@ jobs:
 
       - name: Deploy to PythonAnywhere
         run: |
-          curl -X POST https://www.pythonanywhere.com/api/v0/user/${{ secrets.PA_USERNAME }}/webapps/${{ secrets.PA_APP_NAME }}.pythonanywhere.com/reload/ \
-            -H "Authorization: Token ${{ secrets.PA_API_KEY }}"
+          curl -X POST \
+          -H "Authorization: Token ${{ secrets.PA_API_KEY }}" \
+          https://www.pythonanywhere.com/api/v0/user/${{secrets.PA_USERNAME}}/webapps/${{secrets.PA_APP_NAME}}.pythonanywhere.com/reload/

@@ -227,7 +227,10 @@ def search():
             matches = []  # No matches
             
         # Get recommendations based on the query
-        rec_titles = recommendations.get(inpu.lower(), [])  # List of recommended movie titles
+        if (inpu.lower() in recommendations):
+            rec_titles = recommendations[inpu.lower()]  # List of recommended movie titles
+        else:
+            rec_titles = []
         rec_objs = []
         
         for title in rec_titles:
@@ -285,7 +288,10 @@ def searchsort():
             matches = []  # No matches
             
         # Get recommendations based on the query
-        rec_titles = recommendations.get(inpu, [])  # List of recommended movie titles
+        if (inpu.lower() in recommendations):
+            rec_titles = recommendations[inpu.lower()]  # List of recommended movie titles
+        else:
+            rec_titles = []
         rec_objs = []
         
         for title in rec_titles:
@@ -363,6 +369,8 @@ def view_movie(title):
   rating=(Movie.query.filter_by(title=title).first()).rating
   stock=(Movie.query.filter_by(title=title).first()).stock
   release_date=(Movie.query.filter_by(title=title).first()).year
+  if title.lower() not in recommendations:
+      recommendations[title.lower()] = [title]  # Ensure the title is in the recommendations
   movies = [movie for movie in recommendations[title.lower()] if movie != title]
   movies = [movie for movie in movies if Movie.query.filter_by(title=movie).first() is not None]
   links=[]
