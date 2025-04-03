@@ -15,7 +15,8 @@
                 </form>
             </div>
             <div class="search-bar">
-                <form action="/search" method="POST">
+                <button id="search-button" onclick="document.getElementById('search-form').style.display='flex';document.getElementById('search-button').style.display='none';">Search</button>
+                <form action="/search" method="POST" id="search-form" style="display: none;">
                     <input type="text" name="query" placeholder="Search for movies...">
                     <button type="submit">Search</button>
                 </form>

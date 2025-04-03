@@ -580,7 +580,6 @@ def login_staff():
         return redirect(url_for('staff'))
     if request.method == 'POST':
         staffname = request.form.get('username')
-        email = request.form.get('email')
         password = request.form.get('password')
         
         

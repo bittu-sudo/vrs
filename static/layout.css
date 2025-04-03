@@ -56,6 +56,20 @@ header {
     margin: 0;
 }
 
+.logo-button {
+    all: unset; /* Removes all default button styling */
+    color: red;
+    font-size: 2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.logo-button:focus {
+    outline: none;
+}
+
 /* Search Bar */
 .search-bar {
     display: flex;
