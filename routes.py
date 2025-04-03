@@ -615,8 +615,7 @@ def staff():
     orders = Rent.query.filter_by(returned=False).all()
     
     # Prepare data for template
-    order_data = []
-
+    
     if orders:
                  id=[order.id for order in orders]
                  titles=[(Movie.query.filter_by(id=order.movie_id).first()).title for order in orders]
