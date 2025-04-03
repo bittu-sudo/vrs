@@ -106,7 +106,7 @@ def join():
         db.session.commit()
         flash('Successfully registered! Please log in.','success')
         return redirect(url_for('login_staff'))
-  return render_template("join.html", "")
+  return render_template("join.html","")
 
 
 @app.route("/login_user", methods=['POST','GET'])
@@ -615,8 +615,7 @@ def staff():
     orders = Rent.query.filter_by(returned=False).all()
     
     # Prepare data for template
-    order_data = []
-
+    
     if orders:
                  id=[order.id for order in orders]
                  titles=[(Movie.query.filter_by(id=order.movie_id).first()).title for order in orders]
@@ -627,7 +626,7 @@ def staff():
                  stock_movies = [movie.title for movie in Movie.query.filter_by(stock=0).all()]
                  length=len(user_name)
     else:
-        return  render_template("staff.html",warn='x')
+        return   render_template("staff.html", titles = [], deadline = [], user_name = [], user_email = [], length = 0, out_of_stock_movies = [], order_id = [], warn='x')
     # Get out of stock movies
     stock_movies = [movie.title for movie in Movie.query.filter_by(stock=0).all()]
     if len(stock_movies)==0:
