@@ -1,0 +1,109 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+}
+
+.container {
+    min-height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                      url('https://cdnjs.cloudflare.com/ajax/libs/browser-logos/73.0.0/archive/netflix-desktop/netflix-desktop_512x512.png');
+    background-size: cover;
+    background-position: center;
+    padding: 10px 8%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.logo {
+    width: 150px;
+    cursor: pointer;
+    color: #e50914;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+}
+
+.btn {
+    border: none;
+    outline: none;
+    padding: 7px 20px;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.signin-btn {
+    background-color: #e50914;
+    color: #fff;
+}
+
+.login-btn {
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+}
+
+.content {
+    position: relative;
+    margin-top: 15%;
+    text-align: center;
+}
+
+.content h1 {
+    font-size: 50px;
+    line-height: 70px;
+    font-weight: 600;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.content h3 {
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.email-form {
+    margin: 20px auto;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+}
+
+.email-form input {
+    flex: 1;
+    border: none;
+    outline: none;
+    margin-right: 10px;
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+.email-form button {
+    background-color: #e50914;
+    color: #fff;
+    border: none;
+    outline: none;
+    padding: 15px 30px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}

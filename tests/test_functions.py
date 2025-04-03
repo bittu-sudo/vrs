@@ -71,7 +71,27 @@ class TestFunctions(unittest.TestCase):
         mock_add.assert_called_once()
         mock_commit.assert_called_once()
         self.assertEqual(self.movie.stock, 4)
-    
+
+    @patch("functions.flash")
+    @patch("functions.db.session.commit")
+    @patch("functions.db.session.add")
+    @patch("functions.Movie.query.get")
+    @patch("functions.User.query.get")
+    @patch("functions.Rent.query.filter_by")
+    def test_rent_movie_(self, mock_rent_filter_by, mock_user_get, mock_movie_get, mock_add, mock_commit, mock_flash):
+        """Test renting a movie successfully."""
+        # Configure mocks
+        mock_user_get.return_value = self.user
+        mock_movie_get.return_value = self.rented_movie
+        mock_rent_filter_by.return_value.first.return_value = self.rent
+
+        result = rentmovie(self.user.id, self.rented_movie.id)
+
+        # Verify results
+        self.assertIsNone(result)
+        self.assertEqual(self.rented_movie.stock,5)
+        mock_commit.assert_not_called()
+
     @patch("functions.flash")
     @patch("functions.db.session.commit")
     @patch("functions.Movie.query.get")
@@ -109,7 +129,7 @@ class TestFunctions(unittest.TestCase):
         # Verify results
         self.assertIsNone(result)
         mock_commit.assert_not_called()
-        
+    
     @patch("functions.flash")
     @patch("functions.db.session.commit")
     @patch("functions.db.session.delete")

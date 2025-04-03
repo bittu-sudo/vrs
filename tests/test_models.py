@@ -33,6 +33,16 @@ class ModelsTestCase(unittest.TestCase):
             user_in_db = User.query.filter_by(email="johndoe@example.com").first()
             self.assertIsNotNone(user_in_db)
             self.assertEqual(user_in_db.name, "JohnDoe")
+    def test_create_staff(self):
+        """Test creating a Staff model instance."""
+        with self.app.app_context():
+            staff = Staff(name="JohnDoe1", email="johndoe1@example.com", password="hashedpass")
+            db.session.add(staff)
+            db.session.commit()
+            
+            staff_in_db = Staff.query.filter_by(email="johndoe1@example.com").first()
+            self.assertIsNotNone(staff_in_db)
+            self.assertEqual(staff_in_db.name, "JohnDoe1")
 
     def test_create_movie(self):
         """Test creating a Movie model instance."""
@@ -44,6 +54,7 @@ class ModelsTestCase(unittest.TestCase):
             movie_in_db = Movie.query.filter_by(title="Inception").first()
             self.assertIsNotNone(movie_in_db)
             self.assertEqual(movie_in_db.genre, "Sci-Fi")
+            self.assertEqual(movie_in_db.stock, 10)
 
     def test_rent_movie(self):
         """Test creating a Rent record."""
