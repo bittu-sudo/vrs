@@ -12,8 +12,7 @@ body {
 
 .container {
     min-height: 100vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                      url('https://cdnjs.cloudflare.com/ajax/libs/browser-logos/73.0.0/archive/netflix-desktop/netflix-desktop_512x512.png');
+    background-image: url('https://x.com/i/grok/media');
     background-size: cover;
     background-position: center;
     padding: 10px 8%;
