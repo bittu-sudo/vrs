@@ -35,5 +35,5 @@ jobs:
       - name: Deploy to PythonAnywhere
         run: |
           curl -X POST \
-          -H "Authorization: Token ${{ secrets.PA_API_KEY }}" \
-          https://www.pythonanywhere.com/api/v0/user/${{secrets.PA_USERNAME}}/webapps/${{secrets.PA_APP_NAME}}.pythonanywhere.com/reload/
+          -H "Authorization: Token aec443bec72ed38a17f68cfe40d859edef504bf7" \
+          https://www.pythonanywhere.com/api/v0/user/MovieMartVrs/webapps/MovieMartVrs.pythonanywhere.com/reload/
