@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
 body {
@@ -12,38 +12,77 @@ body {
 
 .container {
     min-height: 100vh;
-    background-image: url('https://x.com/i/grok/media');
+    background-image: url('https://pbs.twimg.com/grok-img-share/1907899790207389696.jpg');
     background-size: cover;
     background-position: center;
     padding: 10px 8%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
 }
 
+/* Dark Overlay Effect */
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+
+/* Header */
 .header {
+    width: 100%;
+    max-width: 1200px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 0;
+    position: absolute;
+    top: 20px;
+    z-index: 2;
 }
 
 .logo {
-    width: 150px;
+    font-size: 40px; /* Increased font size */
+    font-weight: bolder; /* Made font weight bolder */
+    color: #e50914; /* Color of the text */
     cursor: pointer;
-    color: #e50914;
-    font-size: 32px;
-    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 3px; /* Increased letter spacing */
+    transition: 0.3s;
+    position: relative; /* Added to allow left positioning */
+    left: -20px; /* Moved the logo to the left */
+    background: linear-gradient(to right, #ff0000, #e50914); /* Gradient background */
+    -webkit-background-clip: text; /* Clip background to text */
+    -webkit-text-fill-color: transparent; /* Make text transparent to show background */
 }
 
+.logo:hover {
+    text-shadow: 0 0 10px #e50914, 0 0 20px #ff0000;
+}
+
+/* Buttons */
 .buttons {
     display: flex;
+    gap: 10px; /* Added space between buttons */
 }
 
 .btn {
     border: none;
     outline: none;
-    padding: 7px 20px;
-    border-radius: 4px;
-    margin-left: 10px;
+    padding: 12px 28px; /* Adjusted padding */
+    border-radius: 8px; /* Adjusted border-radius */
+    font-size: 17px; /* Adjusted font size */
+    font-weight: 600; /* Adjusted font weight */
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .signin-btn {
@@ -51,58 +90,78 @@ body {
     color: #fff;
 }
 
+.signin-btn:hover {
+    background-color: #ff1a1a;
+    box-shadow: 0 0 10px #e50914, 0 0 20px #ff0000;
+}
+
 .login-btn {
     background-color: transparent;
-    border: 1px solid #fff;
+    border: 2px solid #fff;
     color: #fff;
 }
 
+.login-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Main Content */
 .content {
     position: relative;
-    margin-top: 15%;
+    z-index: 2;
+    margin-top: 120px; /* Pushed content down */
     text-align: center;
+    max-width: 800px;
 }
 
 .content h1 {
-    font-size: 50px;
-    line-height: 70px;
-    font-weight: 600;
-    max-width: 650px;
-    margin: 0 auto;
+    font-size: 58px;
+    line-height: 75px;
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .content h3 {
+    font-size: 22px;
     font-weight: 400;
     margin-bottom: 20px;
 }
 
+/* Email Form */
 .email-form {
-    margin: 20px auto;
-    width: 100%;
-    max-width: 500px;
+    margin-top: 25px;
     display: flex;
+    justify-content: center;
     align-items: center;
+    width: 100%;
+    max-width: 600px;
 }
 
 .email-form input {
     flex: 1;
+    padding: 15px;
+    font-size: 18px;
     border: none;
+    border-radius: 6px;
     outline: none;
     margin-right: 10px;
-    padding: 15px;
-    font-size: 16px;
-    border-radius: 4px;
 }
 
 .email-form button {
     background-color: #e50914;
     color: #fff;
     border: none;
-    outline: none;
     padding: 15px 30px;
-    font-size: 16px;
-    border-radius: 4px;
+    font-size: 18px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: bold;
     display: flex;
     align-items: center;
+    transition: 0.3s;
+}
+
+.email-form button:hover {
+    background-color: #ff1a1a;
+    box-shadow: 0 0 10px #e50914, 0 0 20px #ff0000;
 }
